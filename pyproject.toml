@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nucleus-search-engine"
+version = "0.1.0"
+description = "Open‑core enterprise AI search engine (self‑hosted Glean alternative)"
+authors = [{name = "Your Name", email = "you@example.com"}]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "sqlalchemy>=2.0.25",
+    "asyncpg>=0.29.0",
+    "pgvector>=0.2.4",
+    "redis>=5.0.1",
+    "pyjwt>=2.8.0",
+    "cryptography>=42.0.0",
+    "httpx>=0.26.0",
+    "openai>=1.10.0",
+    "sentence-transformers>=2.3.1",
+    "numpy>=1.26.0",
+    "ruff>=0.5.0",
+    "mypy>=1.10.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourorg/nucleus-search-engine"

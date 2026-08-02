@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: docker.io/pgvector/pgvector:pg16
+    container_name: nucleus_postgres
+    environment:
+      POSTGRES_USER: nucleus
+      POSTGRES_PASSWORD: nucleus_secret
+      POSTGRES_DB: nucleus_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nucleus -d nucleus_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: docker.io/redis:7-alpine
+    container_name: nucleus_redis
+    ports:
+      - "6379:6379"
+
+  data_plane:
+    build:
+      context: .
+      dockerfile: Containerfile.api
+    container_name: nucleus_data_plane
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://nucleus:nucleus_secret@postgres:5432/nucleus_db
+      - REDIS_URL=redis://redis:6379/0
+      - EMBEDDING_PROVIDER=local
+      - LLM_BASE_URL=https://api.openai.com/v1
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  control_plane:
+    build:
+      context: .
+      dockerfile: Containerfile.control_plane
+    container_name: nucleus_control_plane
+    ports:
+      - "8001:8001"
+
+volumes:
+  pgdata:

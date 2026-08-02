@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nucleus - Self-Hosted Enterprise AI Search Engine</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        ⚡ Nucleus
+        <span class="logo-badge" id="editionBadge">COMMUNITY EDITION</span>
+      </div>
+
+      <div class="controls-bar">
+        <!-- Persona Switcher -->
+        <label style="font-size: 0.85rem; color: var(--text-secondary);">User Identity:</label>
+        <select id="personaSelect" class="persona-select">
+          <option value="intern">Intern A (Software Intern - Public Docs)</option>
+          <option value="eng_lead">Alex (Engineering Lead - Tech Docs)</option>
+          <option value="hr_manager" selected>Sarah (HR Manager - Confidential Salary)</option>
+          <option value="admin">System Admin (Full Access)</option>
+        </select>
+
+        <!-- License Button -->
+        <button class="btn-license" onclick="openLicenseModal()">🔑 License Key</button>
+      </div>
+    </header>
+
+    <!-- Hero Search Section -->
+    <div class="search-hero">
+      <h1 class="hero-title">Self-Hosted Enterprise AI Search</h1>
+      <p class="hero-subtitle">Multi-tenant, permission-aware internal search engine powered by PostgreSQL pgvector & tsvector.</p>
+
+      <div class="search-box-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search docs, code, salaries, or error codes (e.g. ERR_AUTH_4092)..." value="What are the executive salary bands and system architecture?">
+        <button class="search-btn" onclick="executeSearch()">Search Engine</button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('searchTab')">Search & AI RAG</button>
+      <button class="tab-btn" onclick="switchTab('ingestTab')">Document Sync & Connectors</button>
+      <button class="tab-btn" onclick="switchTab('auditTab')">SOC2 Audit Log Inspector</button>
+    </div>
+
+    <!-- Tab 1: Search & AI RAG -->
+    <div id="searchTab" class="tab-content">
+      <!-- AI Answer Box -->
+      <div id="aiAnswerBox" class="ai-answer-card" style="display: none;">
+        <div class="ai-badge">✨ Grounded BYO-LLM Answer</div>
+        <div id="aiAnswerText" class="ai-answer-text"></div>
+      </div>
+
+      <!-- Search Results -->
+      <div id="resultsContainer" class="results-list"></div>
+    </div>
+
+    <!-- Tab 2: Document Sync & Connectors -->
+    <div id="ingestTab" class="tab-content" style="display: none;">
+      <div class="ai-answer-card">
+        <h3>Pluggable Connectors & Ingestion Pipeline</h3>
+        <p style="color: var(--text-secondary); margin: 8px 0 16px 0;">Sync internal files into PostgreSQL vector & BM25 database.</p>
+        
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-license" onclick="syncLocalDir()">Sync Local Directory Connector</button>
+          <button class="btn-license" style="background: var(--accent-emerald);" onclick="syncGDrive()">Sync Google Drive Stub</button>
+        </div>
+        <div id="syncStatus" style="margin-top: 16px; font-family: monospace; color: #60a5fa;"></div>
+      </div>
+    </div>
+
+    <!-- Tab 3: SOC2 Audit Logs -->
+    <div id="auditTab" class="tab-content" style="display: none;">
+      <div class="ai-answer-card">
+        <h3>SOC2 / DPDP Immutable Audit Log Stream</h3>
+        <p style="color: var(--text-secondary); margin: 4px 0 12px 0;">Append-only table recording every search query, user identity, and retrieved chunk IDs.</p>
+        <button class="btn-license" style="font-size: 0.8rem;" onclick="fetchAuditLogs()">Refresh Logs</button>
+        
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>User ID</th>
+              <th>Query Text</th>
+              <th>Retrieved Doc Chunks</th>
+              <th>Latency</th>
+            </tr>
+          </thead>
+          <tbody id="auditLogsBody">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No audit logs fetched yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- License Key Modal -->
+  <div id="licenseModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Activate Enterprise License Key</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px;">
+        Paste your Control Plane Ed25519 Signed JWT Token below to unlock Postgres RLS RBAC & SOC2 Audit Logging features.
+      </p>
+      <textarea id="licenseJwtInput" class="license-input" placeholder="Paste NUC_ENT_ JWT Token here..."></textarea>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="tab-btn" onclick="closeLicenseModal()">Cancel</button>
+        <button class="btn-license" onclick="activateLicense()">Activate License</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
