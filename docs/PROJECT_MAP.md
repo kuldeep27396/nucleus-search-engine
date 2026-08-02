@@ -12,6 +12,7 @@
 - [x] `requirements.txt` - Complete Python dependency specifications
 - [x] `.env.example` - Environment configuration template
 - [x] `README.md` - Developer setup guide & project overview
+- [x] `docs/BACKEND_TODO.md` - Comprehensive Backend Engineering Roadmap & TODO Plan
 - [x] `podman-compose.yml` - Podman container orchestration for Postgres, Redis, Data Plane & Control Plane
 - [x] `Containerfile.api` - Podman image definition for Data Plane FastAPI Gateway
 - [x] `Containerfile.control_plane` - Podman image definition for Control Plane License Server
