@@ -19,43 +19,53 @@
 
 ## 📐 System Architecture
 
-```
-+---------------------------------------------------------------------------------------------------+
-| DATA PLANE (Customer's VPC - 100% Private Data & Offline Capable)                                 |
-|                                                                                                   |
-|  +-------------------+       HTTPS       +------------------------------------+                    |
-|  | Web Search UI     | <---------------> | FastAPI Gateway (Data Plane API)   |                    |
-|  +-------------------+                   +------------------------------------+                    |
-|                                            |  * Ed25519 License Gate (Offline) |                    |
-|                                            |  * Auth & RLS Pre-Filter Engine    |                    |
-|                                            |  * Hybrid Search Engine (RRF)     |                    |
-|                                            |  * BYO-LLM Dynamic Router        |                    |
-|                                            |  * SOC2 Immutable Audit Logger    |                    |
-|                                            +------------------------------------+                    |
-|                                              |                 |                 \                 |
-|                                              v                 v                  v                |
-|                                       +-------------+  +---------------+  +--------------------+   |
-|                                       | Postgres +  |  | Redis Stream  |  | LiteLLM Proxy /    |   |
-|                                       | pgvector    |  | Ingestion     |  | Customer OpenAI    |   |
-|                                       | (HNSW+BM25) |  +---------------+  +--------------------+   |
-|                                       +-------------+          |                                   |
-|                                                                v                                   |
-|                                                        +---------------+                           |
-|                                                        | Ingestion     |                           |
-|                                                        | Python Worker |                           |
-|                                                        +---------------+                           |
-+---------------------------------------------------------------------------------------------------+
-                                            ||
-                                            || Offline Ed25519 Verification (Zero Outbound Telemetry)
-                                            \/
-+---------------------------------------------------------------------------------------------------+
-| CONTROL PLANE (Hosted Monetization Server - SaaS)                                                 |
-|  +---------------------------------------------------------------------------------------------+  |
-|  | FastAPI License Server                                                                      |  |
-|  |  * Ed25519 Key Pair Generator & Signed JWT Issuer                                         |  |
-|  |  * Stripe Webhook Listener (Subscription lifecycle)                                         |  |
-|  +---------------------------------------------------------------------------------------------+  |
-+---------------------------------------------------------------------------------------------------+
+```mermaid
+flowchart TB
+    subgraph DataPlane["🛡️ DATA PLANE (Customer VPC - 100% Private & Air-Gapped)"]
+        UI["💻 Web Search UI Portal"]
+        GW["⚡ FastAPI Gateway API"]
+        GATE["🔐 Ed25519 License Gate"]
+        RLS["🔍 Auth & RLS Pre-Filter Engine"]
+        HS["📊 Hybrid Search (BM25 + HNSW RRF)"]
+        LLM_R["🤖 BYO-LLM Dynamic Router"]
+        AUDIT["📝 SOC2 Immutable Audit Logger"]
+        DB[("🗄️ PostgreSQL 16 + pgvector\n(HNSW + BM25 GIN Index)")]
+        QUEUE["⚡ Redis Streams Ingestion Queue"]
+        WORKER["⚙️ Background Ingestion Worker"]
+        LLM["🧠 LiteLLM Proxy / Ollama / OpenAI"]
+    end
+
+    subgraph ControlPlane["🔑 CONTROL PLANE (SaaS Monetization Server)"]
+        LIC["🔑 FastAPI License Server"]
+        ED["🔏 Ed25519 JWT Keypair Issuer"]
+        STRIPE["💳 Stripe Webhook Listener"]
+    end
+
+    UI <-->|HTTPS| GW
+    GW --> GATE & RLS & HS & LLM_R & AUDIT
+    GW --> DB
+    GW --> QUEUE
+    QUEUE --> WORKER
+    WORKER --> DB
+    LLM_R <--> LLM
+    GATE -.->|Offline Public-Key Verification| LIC
+
+    %% Color Styles
+    classDef dpStyle fill:#0f172a,stroke:#6366f1,stroke-width:2px,color:#f8fafc
+    classDef cpStyle fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#f8fafc
+    classDef uiNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff
+    classDef engineNode fill:#1e293b,stroke:#818cf8,stroke-width:2px,color:#f8fafc
+    classDef dbNode fill:#065f46,stroke:#34d399,stroke-width:2px,color:#ffffff
+    classDef queueNode fill:#9a3412,stroke:#fb923c,stroke-width:2px,color:#ffffff
+    classDef cpNode fill:#6b21a8,stroke:#c084fc,stroke-width:2px,color:#ffffff
+
+    class DataPlane dpStyle
+    class ControlPlane cpStyle
+    class UI uiNode
+    class GW,GATE,RLS,HS,LLM_R,AUDIT,WORKER,LLM engineNode
+    class DB dbNode
+    class QUEUE queueNode
+    class LIC,ED,STRIPE cpNode
 ```
 
 ---
