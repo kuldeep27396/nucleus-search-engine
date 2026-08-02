@@ -1,0 +1,213 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Nucleus design system — light SaaS console with soft glass surfaces.
+ * Tokens are defined on :root and mapped to utilities in @theme inline.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-indigo-glow: var(--indigo-glow);
+  --color-cyan-glow: var(--cyan-glow);
+  --color-emerald-glow: var(--emerald-glow);
+  --color-amber-glow: var(--amber-glow);
+  --color-purple-glow: var(--purple-glow);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-hairline: var(--hairline);
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.985 0.004 265);
+  --foreground: oklch(0.24 0.03 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.03 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.03 265);
+  --primary: oklch(0.52 0.2 277);
+  --primary-foreground: oklch(0.99 0.005 260);
+  --secondary: oklch(0.96 0.008 265);
+  --secondary-foreground: oklch(0.3 0.03 265);
+  --muted: oklch(0.96 0.008 265);
+  --muted-foreground: oklch(0.53 0.024 265);
+  --accent: oklch(0.955 0.014 275);
+  --accent-foreground: oklch(0.3 0.03 265);
+  --destructive: oklch(0.57 0.21 27);
+  --destructive-foreground: oklch(0.99 0.005 260);
+  --border: oklch(0.91 0.008 265);
+  --input: oklch(0.91 0.008 265);
+  --ring: oklch(0.52 0.2 277);
+
+  --indigo-glow: oklch(0.52 0.2 277);
+  --cyan-glow: oklch(0.53 0.12 220);
+  --emerald-glow: oklch(0.52 0.13 163);
+  --amber-glow: oklch(0.58 0.14 65);
+  --purple-glow: oklch(0.52 0.21 305);
+  --surface: oklch(1 0 0 / 78%);
+  --surface-strong: oklch(1 0 0 / 94%);
+  --hairline: oklch(0.9 0.01 265);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: oklch(0.985 0.004 265);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility glass-card {
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--hairline);
+  border-radius: 0.875rem;
+  box-shadow:
+    0 1px 2px oklch(0.4 0.03 265 / 6%),
+    0 12px 28px -18px oklch(0.4 0.03 265 / 30%);
+}
+
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    100deg,
+    var(--indigo-glow),
+    var(--purple-glow) 60%,
+    var(--cyan-glow)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+}
+
+@utility grid-backdrop {
+  background-image:
+    linear-gradient(to right, oklch(0.55 0.03 265 / 6%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.55 0.03 265 / 6%) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+
+/* --- Bold Bento accents (marketing surfaces) --- */
+@theme inline {
+  --color-fuchsia-glow: var(--fuchsia-glow);
+  --color-orange-glow: var(--orange-glow);
+  --color-ink: var(--ink);
+}
+
+:root {
+  --fuchsia-glow: oklch(0.56 0.25 328);
+  --orange-glow: oklch(0.68 0.19 48);
+  --ink: oklch(0.21 0.035 265);
+}
+
+@utility bold-card {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 1.5rem;
+  box-shadow: 8px 8px 0 0 var(--ink);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+@utility bold-card-lift {
+  &:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 4px 4px 0 0 var(--ink);
+  }
+}
+
+@utility bold-shadow-brand {
+  box-shadow: 6px 6px 0 0 var(--indigo-glow);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  &:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 0 var(--indigo-glow);
+  }
+}
+
+@utility text-gradient-hot {
+  background-image: linear-gradient(
+    100deg,
+    var(--indigo-glow),
+    var(--fuchsia-glow) 55%,
+    var(--orange-glow)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Bold Bento console surfaces (authenticated app) --- */
+@utility bold-panel {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 1.25rem;
+  box-shadow: 5px 5px 0 0 var(--ink);
+}
+
+@utility bold-panel-soft {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 1.25rem;
+  box-shadow: 4px 4px 0 0 oklch(0.21 0.035 265 / 12%);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 0 var(--ink);
+  }
+}
+
+@utility bold-pill {
+  border: 2px solid var(--ink);
+  border-radius: 9999px;
+  background: var(--card);
+  font-weight: 600;
+}
